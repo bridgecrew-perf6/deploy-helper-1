@@ -1,0 +1,26 @@
+upstream xxx{
+	server 172.17.0.2:1337 weight=1 max_fails=2 fail_timeout=30;
+}
+
+server {
+       listen 80;
+       server_name xxx.com;
+       index index.jsp index.html index.htm;
+       #发布目录/data/www
+       root /home/www;
+
+       listen 443 ssl;
+       #ssl on;
+       ssl_certificate certs/ssl-default.pem;
+       ssl_certificate_key certs/ssl-default.key;
+       ssl_session_timeout 5m;
+
+       location / {
+               proxy_next_upstream http_502 http_504 error timeout invalid_header;
+               proxy_set_header Host  $host;
+               proxy_set_header X-Real-IP $remote_addr;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_pass http://xxx;
+               proxy_redirect http:// $scheme://;
+       }
+}
