@@ -1,14 +1,14 @@
 version: "3.7"
 
 services:
-  redis:
+  nginx:
     image: nginx:1.20.2
     restart: always
     environment:
       - TZ=Asia/Shanghai
     network_mode: host
     volumes:
-      - ./nginx-config/config.d:/etc/nginx/conf.d
+      - ./nginx-config/conf.d:/etc/nginx/conf.d
       - ./nginx-config/certs:/etc/nginx/certs
       - ./nginx-config/logs:/var/logs/nginx
       - ./nginx-config/html:/home/www
